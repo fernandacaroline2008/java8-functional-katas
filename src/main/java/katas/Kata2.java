@@ -12,8 +12,11 @@ import util.DataUtil;
     Output: List of Integers
 */
 public class Kata2 {
-	public static List<Integer> execute() {
-		List<Movie> movies = DataUtil.getMovies();
-		return movies.stream().filter(item -> item.getRating() == 5.0).map(Movie::getId).collect(Collectors.toList());
-	}
+    public static List<Integer> execute() {
+	List<Movie> movies = DataUtil.getMovies();
+	return movies.stream()
+		.filter(item -> item.getRating() == 5.0)
+		.map(Movie::getId)
+		.collect(Collectors.toList());
+    }
 }

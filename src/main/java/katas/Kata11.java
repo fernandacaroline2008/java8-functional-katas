@@ -1,11 +1,13 @@
 package katas;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import util.DataUtil;
-
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import util.DataUtil;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -58,13 +60,30 @@ import java.util.Map;
 */
 public class Kata11 {
     public static List<Map> execute() {
-        List<Map> lists = DataUtil.getLists();
-        List<Map> videos = DataUtil.getVideos();
-        List<Map> boxArts = DataUtil.getBoxArts();
-        List<Map> bookmarkList = DataUtil.getBookmarkList();
-
-        return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
-                ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
-        )));
+	List<Map> lists = DataUtil.getLists();
+	List<Map> videos = DataUtil.getVideos();
+	List<Map> boxArts = DataUtil.getBoxArts();
+	List<Map> bookmarkList = DataUtil.getBookmarkList();
+	
+	return lists.stream().map(
+		item -> ImmutableMap.of(
+			"name", item.get("name"),
+			"videos", videos.stream()
+					.filter(itemVideo -> itemVideo.get("listId").equals(item.get("id")))
+					.map(itemVideo -> ImmutableMap.of(
+        					"id", itemVideo.get("id"),
+        					"title", itemVideo.get("title"),
+        					"time", bookmarkList.stream()
+        							    .filter(itemBookmark -> itemBookmark.get("videoId").equals(itemVideo.get("id")))
+        							    .findFirst()
+        							    .map(itemBookmark -> itemBookmark.get("time")),
+        					"boxart", boxArts.stream()
+        							 .filter(itemBoxArt -> itemBoxArt.get("videoId").equals(itemVideo.get("id")))
+        							 .findFirst()
+        							 .map(itemBoxArt -> itemBoxArt.get("url"))
+        					)
+					).collect(Collectors.toList())
+		)).collect(Collectors.toList());
+	
     }
 }

@@ -2,8 +2,8 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import model.Movie;
@@ -14,11 +14,16 @@ import util.DataUtil;
     DataSource: DataUtil.getMovies()
     Output: List of
 */
-public class Kata1 {
-	public static List<Map> execute() {
-		List<Movie> movies = DataUtil.getMovies();
-		// List<Map<String, Integer>> moviesMap = movies.stream().collect(Collectors.toMap("id", Movie::getId));
-		// return moviesMap;
-		return ImmutableList.of(ImmutableMap.of("id", "5", "title", "Bad Boys"));
-	}
+public class Kata1
+{
+    public static List<Map> execute()
+    {
+        List<Movie> movies = DataUtil.getMovies();
+        return movies.stream()
+        	.map(item -> ImmutableMap.of(
+                		"id", item.getId(),
+                		"title", item.getTitle()
+        		)
+        	).collect(Collectors.toList());
+    }
 }
