@@ -12,4 +12,5 @@ public class Kata5Test {
 	System.out.println(Kata5.execute());
 	Assert.assertThat(Kata5.execute(), equalTo(5.0));
     }
+
 }

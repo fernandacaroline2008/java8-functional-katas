@@ -12,6 +12,7 @@ import util.DataUtil;
     DataSource: DataUtil.getMovieLists()
     Output: List of Integers
 */
+
 public class Kata3
 {
     public static List<Integer> execute()
@@ -23,4 +24,5 @@ public class Kata3
         	.map(Movie::getId)
         	.collect(Collectors.toList());
     }
+
 }

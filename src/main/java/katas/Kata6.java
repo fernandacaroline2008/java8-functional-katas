@@ -15,10 +15,12 @@ import util.DataUtil;
     Output: String
 */
 public class Kata6 {
+
     public static Optional<String> execute() {
 	List<MovieList> movieLists = DataUtil.getMovieLists();
 	Stream<Movie> moviesStream = movieLists.stream().map(MovieList::getVideos).flatMap(item -> item.stream());
 	Stream<BoxArt> boxartsStream = moviesStream.map(Movie::getBoxarts).flatMap(item -> item.stream());
 	return boxartsStream.reduce((BoxArt a, BoxArt b) -> a.getWidth() > b.getWidth() ? a : b).map(BoxArt::getUrl);
     }
+
 }

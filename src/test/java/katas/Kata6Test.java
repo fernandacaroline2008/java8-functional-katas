@@ -15,4 +15,5 @@ public class Kata6Test {
 	Assert.assertThat(Kata6.execute(),
 		equalTo(Optional.of("http://cdn-0.nflximg.com/images/2891/Fracture300.jpg")));
     }
+
 }

@@ -11,10 +11,11 @@ import util.DataUtil;
     Output: Double
 */
 public class Kata5 {
-	public static Double execute() {
+    public static Double execute() {
 		List<Movie> movies = DataUtil.getMovies();
+
 		return movies.stream()
 			.map(Movie::getRating)
 			.reduce(0.0, (a, b) -> Double.max(a, b));
-	}
+    }
 }

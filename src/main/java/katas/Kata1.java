@@ -14,8 +14,7 @@ import util.DataUtil;
     DataSource: DataUtil.getMovies()
     Output: List of
 */
-public class Kata1
-{
+public class Kata1 {
     public static List<Map> execute()
     {
         List<Movie> movies = DataUtil.getMovies();
