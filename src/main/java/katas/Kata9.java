@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import model.Bookmark;
 import model.BoxArt;
+import model.InterestingMoment;
 import model.Movie;
 import model.MovieList;
 import util.DataUtil;
@@ -11,6 +12,7 @@ import util.DataUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,16 +24,22 @@ import java.util.stream.Stream;
 public class Kata9 {
     public static List<Map> execute() {
 		List<MovieList> movieLists = DataUtil.getMovieLists();
-		Stream<Movie> moviesStream = movieLists.stream().map(MovieList::getVideos).flatMap(item -> item.stream());
-		return moviesStream.map(
-			item -> ImmutableMap.of(
-				"id", item.getId(), 
-				"title", item.getTitle(),
-				"time", item.getInterestingMoments()
-					.get(item.getInterestingMoments().size() / 2).getTime(),
-				"url", item.getBoxarts()
-        				.stream()
-        				.reduce((BoxArt a, BoxArt b) -> a.getWidth() < b.getWidth() ? a : b).map(BoxArt::getUrl))
-			).collect(Collectors.toList());
+		return movieLists.stream()
+			.flatMap(item -> item.getVideos().stream())
+			.map(functionMovieToMap())
+			.collect(Collectors.toList());
+    }
+    
+    public static Function<Movie, Map<String, Object>> functionMovieToMap(){
+	return movie -> ImmutableMap.of(
+		"id", movie.getId(), 
+		"title", movie.getTitle(),
+		"time", movie.getInterestingMoments().stream()
+			.filter(moment -> "Middle".equals(moment.getType()))
+			.findFirst()
+			.map(InterestingMoment::getTime),
+		"url", movie.getBoxarts().stream()
+			.reduce((box1, box2) -> box1.getWidth() < box2.getWidth() ? box1 : box2)
+			.map(BoxArt::getUrl));
     }
 }

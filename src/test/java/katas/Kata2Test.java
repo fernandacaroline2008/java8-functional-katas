@@ -10,9 +10,13 @@ import com.google.common.collect.ImmutableList;
 public class Kata2Test {
 
     @Test
-    public void testExecute() {
-	System.out.println(Kata2.execute());
+    public void testExecuteSize() {
 	Assert.assertThat(Kata2.execute().size(), equalTo(2));
+    }
+
+    @Test
+    public void testExecuteStructure() {
 	Assert.assertThat(Kata2.execute(), equalTo(ImmutableList.of(654356453, 675465)));
+	System.out.println(Kata2.execute());
     }
 }

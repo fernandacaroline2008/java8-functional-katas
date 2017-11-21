@@ -2,12 +2,15 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.codepoetics.protonpack.StreamUtils;
 import com.google.common.collect.ImmutableMap;
 
+import model.BoxArt;
+import model.Movie;
 import util.DataUtil;
 
 /*
@@ -56,14 +59,14 @@ public class Kata10 {
 	List<Map> lists = DataUtil.getLists();
 	List<Map> videos = DataUtil.getVideos();
 
-	return lists.stream().map(
-			item -> ImmutableMap.of(
-				"name", item.get("name"),
+	return lists.stream()
+		.map(list -> ImmutableMap.of(
+				"name", list.get("name"),
 				"videos", videos.stream()
-						.filter(itemVideo -> itemVideo.get("listId").equals(item.get("id")))
-    						.map(itemVideo -> ImmutableMap.of(
-                        					"id", itemVideo.get("id"),
-                        					"title", itemVideo.get("title")))
+						.filter(video -> video.get("listId").equals(list.get("id")))
+    						.map(video -> ImmutableMap.of(
+                        					"id", video.get("id"),
+                        					"title", video.get("title")))
     						.collect(Collectors.toList())
 			)).collect(Collectors.toList());
 

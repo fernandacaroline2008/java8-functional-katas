@@ -2,8 +2,8 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -20,14 +20,18 @@ import util.DataUtil;
 public class Kata7 {
     public static List<Map> execute() {
 	List<MovieList> movieLists = DataUtil.getMovieLists();
-	Stream<Movie> moviesStream = movieLists.stream().map(MovieList::getVideos).flatMap(item -> item.stream());
-	return moviesStream.map(
-		item -> ImmutableMap.of(
-			"id", item.getId(), 
-			"title", item.getTitle(), 
-			"boxart", item.getBoxarts()
-				.stream()
-				.reduce((BoxArt a, BoxArt b) -> a.getWidth() < b.getWidth() ? a : b).map(BoxArt::getUrl)))
+	return movieLists.stream()
+		.flatMap(movieList -> movieList.getVideos().stream())
+		.map(functionMovieToMap())
 		.collect(Collectors.toList());
+    }
+        
+    public static Function<Movie, ImmutableMap<String,Object>> functionMovieToMap(){
+	return item -> ImmutableMap.of(
+		"id", item.getId(),
+		"title", item.getTitle(),
+		"boxart", item.getBoxarts().stream()
+				.reduce((box1, box2) -> box1.getWidth() < box2.getWidth() ? box1 : box2)
+				.map(BoxArt::getUrl));
     }
 }

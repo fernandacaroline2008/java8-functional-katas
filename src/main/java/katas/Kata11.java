@@ -2,11 +2,13 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import model.BoxArt;
+import model.Movie;
 import util.DataUtil;
 
 /*
@@ -62,28 +64,30 @@ public class Kata11 {
     public static List<Map> execute() {
 	List<Map> lists = DataUtil.getLists();
 	List<Map> videos = DataUtil.getVideos();
+	return lists
+		.stream().map(
+			list -> ImmutableMap.of(
+				"name", list.get("name"),
+				"videos", videos.stream()
+					.filter(video -> video.get("listId").equals(list.get("id")))
+					.map(functionMovieToMap())
+					.collect(Collectors.toList())))
+		.collect(Collectors.toList());
+    }
+
+    public static Function<Map, ImmutableMap<String,Object>> functionMovieToMap(){
 	List<Map> boxArts = DataUtil.getBoxArts();
 	List<Map> bookmarkList = DataUtil.getBookmarkList();
-	
-	return lists.stream().map(
-		item -> ImmutableMap.of(
-			"name", item.get("name"),
-			"videos", videos.stream()
-					.filter(itemVideo -> itemVideo.get("listId").equals(item.get("id")))
-					.map(itemVideo -> ImmutableMap.of(
-        					"id", itemVideo.get("id"),
-        					"title", itemVideo.get("title"),
-        					"time", bookmarkList.stream()
-        							    .filter(itemBookmark -> itemBookmark.get("videoId").equals(itemVideo.get("id")))
-        							    .findFirst()
-        							    .map(itemBookmark -> itemBookmark.get("time")),
-        					"boxart", boxArts.stream()
-        							 .filter(itemBoxArt -> itemBoxArt.get("videoId").equals(itemVideo.get("id")))
-        							 .findFirst()
-        							 .map(itemBoxArt -> itemBoxArt.get("url"))
-        					)
-					).collect(Collectors.toList())
-		)).collect(Collectors.toList());
-	
+	return movie -> ImmutableMap.of(
+		"id", movie.get("id"),
+		"title", movie.get("title"),
+		"time", bookmarkList.stream()
+			.filter(bookmark -> bookmark.get("videoId").equals(movie.get("id")))
+			.findFirst()
+			.map(bookmark -> bookmark.get("time")),
+		"boxart", boxArts.stream()
+			.filter(boxArt -> boxArt.get("videoId").equals(movie.get("id")))
+			.reduce((box1, box2) -> (Integer) box1.get("width") < (Integer) box2.get("width") ? box1 : box2)
+			.map(boxArt -> boxArt.get("url")));
     }
 }

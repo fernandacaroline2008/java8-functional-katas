@@ -2,7 +2,10 @@ package katas;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
+
+import com.google.common.collect.ImmutableMap;
 
 import model.BoxArt;
 import model.Movie;
@@ -18,9 +21,13 @@ public class Kata6 {
 
     public static Optional<String> execute() {
 	List<MovieList> movieLists = DataUtil.getMovieLists();
-	Stream<Movie> moviesStream = movieLists.stream().map(MovieList::getVideos).flatMap(item -> item.stream());
-	Stream<BoxArt> boxartsStream = moviesStream.map(Movie::getBoxarts).flatMap(item -> item.stream());
-	return boxartsStream.reduce((BoxArt a, BoxArt b) -> a.getWidth() > b.getWidth() ? a : b).map(BoxArt::getUrl);
+	return movieLists.stream()
+		.flatMap(item -> item.getVideos().stream())
+		.flatMap(item -> item.getBoxarts().stream())
+		.reduce((box1, box2) -> box1.getWidth() > box2.getWidth() ? box1 : box2)
+		.map(BoxArt::getUrl);
+
     }
+    
 
 }

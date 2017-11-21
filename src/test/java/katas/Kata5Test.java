@@ -8,9 +8,9 @@ import org.junit.Test;
 public class Kata5Test {
 
     @Test
-    public void testExecute() {
-	System.out.println(Kata5.execute());
+    public void testExecuteStructure() {
 	Assert.assertThat(Kata5.execute(), equalTo(5.0));
+	System.out.println(Kata5.execute());
     }
 
 }

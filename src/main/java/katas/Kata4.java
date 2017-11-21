@@ -2,8 +2,8 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -17,22 +17,23 @@ import util.DataUtil;
     DataSource: DataUtil.getMovieLists()
     Output: List of ImmutableMap.of("id", "5", "title", "Bad Boys", "boxart": BoxArt)
 */
-public class Kata4
-{
-    public static List<Map> execute()
-    {
-        List<MovieList> movieLists = DataUtil.getMovieLists();
-        Stream<Movie> moviesStream = movieLists.stream().map(MovieList::getVideos).flatMap(item -> item.stream());
-        return moviesStream.map(
-        	itemMovie -> ImmutableMap.of(
-                        "id", itemMovie.getId(),
-                        "title", itemMovie.getTitle(),
-                        "boxart", itemMovie.getBoxarts()
-                            .stream()
-                            .filter(item -> item.getHeight() == 200 && item.getWidth() == 150)
-                            .map(BoxArt::getUrl)
-                            .findFirst()))
-                .collect(Collectors.toList());
-    }
+public class Kata4 {
 
+    public static List<Map<String,Object>> execute() {
+	List<MovieList> movieLists = DataUtil.getMovieLists();
+	return movieLists.stream()
+		.flatMap(movieList -> movieList.getVideos().stream())
+		.map(functionMovieToMap())
+		.collect(Collectors.toList());
+    }
+    
+    public static Function<Movie, ImmutableMap<String,Object>> functionMovieToMap(){
+    	return movie -> ImmutableMap.of(
+		"id", movie.getId(), 
+		"title", movie.getTitle(),
+		"boxart", movie.getBoxarts().stream()
+			.filter(boxart -> boxart.getHeight().equals(200) && boxart.getWidth().equals(150))
+			.map(BoxArt::getUrl).findFirst());
+    }
+    
 }
